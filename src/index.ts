@@ -3,7 +3,8 @@ import { createConnection } from "typeorm";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
-import resolvers from "./resolvers";
+import resolvers from "./graphql/resolvers";
+import restapi from "./api/routes";
 
 (async () => {
   const app = express();
@@ -18,6 +19,8 @@ import resolvers from "./resolvers";
   });
 
   apolloServer.applyMiddleware({ app, cors: false });
+
+  app.use("/api", restapi);
   const port = process.env.PORT || 4000;
   app.listen(port, () => {
     console.log(`API server started on http://localhost:${port}/graphql`);

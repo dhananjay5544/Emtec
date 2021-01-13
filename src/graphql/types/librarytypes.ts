@@ -7,6 +7,9 @@ export class ActionResponse {
 
   @Field()
   msg: string;
+
+  @Field({ nullable: true })
+  reminder?: string;
 }
 
 @InputType()

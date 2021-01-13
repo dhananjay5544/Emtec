@@ -8,6 +8,9 @@ import {
   BookReturnInput,
 } from "../types/librarytypes";
 
+import scheduleMail from "../utils/scheduleReminder";
+import { User } from "../entity/User";
+
 @Resolver()
 export class LibraryResolver {
   // Mutation: issue book
@@ -15,24 +18,52 @@ export class LibraryResolver {
   async issueBook(
     @Arg("options", () => BookIssueInput) options: BookIssueInput
   ) {
-    await Library.create({ ...options, status: "issued" }).save();
-    const entityManager = getManager();
-    await entityManager.query(
-      `Insert into book_users_user values(${options.bookid},${options.userid})`
-    );
-    await entityManager.query(
-      `Insert into user_books_book values(${options.userid},${options.bookid})`
-    );
-    await entityManager.decrement(
-      Book,
-      { book_id: options.bookid },
-      "quantity",
-      1
-    );
-    return {
-      status: true,
-      msg: `book has been issued to user ${options.userid}`,
-    };
+    // check user exists or not
+    const user = await User.find({ where: { user_id: options.userid } });
+
+    if (user.length !== 0) {
+      // check book already issued
+      const isIssued = await Library.find({
+        where: {
+          bookid: options.bookid,
+          userid: options.userid,
+          status: "issued",
+        },
+      });
+
+      if (isIssued.length === 0) {
+        await Library.create({ ...options, status: "issued" }).save();
+        const entityManager = getManager();
+        await entityManager.query(
+          `Insert into book_users_user values(${options.bookid},${options.userid})`
+        );
+        await entityManager.query(
+          `Insert into user_books_book values(${options.userid},${options.bookid})`
+        );
+        await entityManager.decrement(
+          Book,
+          { book_id: options.bookid },
+          "quantity",
+          1
+        );
+        var mailRes = await scheduleMail(user[0].email, user[0].firstname);
+        return {
+          status: true,
+          msg: `book has been issued to user ${options.userid}`,
+          reminder: mailRes,
+        };
+      } else {
+        return {
+          status: false,
+          msg: `Book has been already issued to ${user[0].firstname}`,
+        };
+      }
+    } else {
+      return {
+        status: false,
+        msg: `User not found`,
+      };
+    }
   }
 
   // Mutation: return book
@@ -81,7 +112,7 @@ export class LibraryResolver {
 
   // Query: library books history
   @Query(() => [Library])
-  Library() {
+  async Library() {
     return Library.find();
   }
 }

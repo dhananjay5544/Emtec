@@ -12,6 +12,9 @@ export class UserOutput {
   @Field()
   lastname: string;
 
+  @Field()
+  email: string;
+
   @Field(() => Int)
   age: number;
 
@@ -27,6 +30,9 @@ export class UserInput {
   @Field()
   lastname: string;
 
+  @Field()
+  email: string;
+
   @Field(() => Int)
   age: number;
 }
@@ -38,6 +44,9 @@ export class UserUpdateInput {
 
   @Field(() => String, { nullable: true })
   lastname?: string;
+
+  @Field(() => String, { nullable: true })
+  email?: string;
 
   @Field(() => Int, { nullable: true })
   age?: number;
