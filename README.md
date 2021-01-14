@@ -2,11 +2,11 @@
 
 > Backend API that supports both REST and GraphQL.
 
-#### TODOs
+#### TODO List
 
-- [-] REST API Support
+- [ ] REST API Support
   - [x] Book CRUD operations
-  - [-] User CRUD operations
-  - [-] Library admin functions
-    - [-] Issue Book
-    - [-] Return Book
+  - [ ] User CRUD operations
+  - [ ] Library admin functions
+    - [ ] Issue Book
+    - [ ] Return Book
