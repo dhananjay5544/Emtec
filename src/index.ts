@@ -5,6 +5,7 @@ import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import resolvers from "./graphql/resolvers";
 import restapi from "./api/routes";
+//import scheduler from "./graphql/utils/scheduleReminder";
 
 (async () => {
   const app = express();
@@ -21,6 +22,8 @@ import restapi from "./api/routes";
   apolloServer.applyMiddleware({ app, cors: false });
   app.use(express.json());
   app.use("/api", restapi);
+
+  //await scheduler();
   const port = process.env.PORT || 4000;
   app.listen(port, () => {
     console.log(`API server started on http://localhost:${port}/graphql`);
