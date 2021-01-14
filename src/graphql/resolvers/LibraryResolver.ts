@@ -8,7 +8,6 @@ import {
   BookReturnInput,
 } from "../types/librarytypes";
 
-import scheduleMail from "../utils/scheduleReminder";
 import { User } from "../entity/User";
 
 @Resolver()
@@ -46,11 +45,10 @@ export class LibraryResolver {
           "quantity",
           1
         );
-        var mailRes = await scheduleMail(user[0].email, user[0].firstname);
         return {
           status: true,
           msg: `book has been issued to user ${options.userid}`,
-          reminder: mailRes,
+          reminder: "reminder has been set",
         };
       } else {
         return {
