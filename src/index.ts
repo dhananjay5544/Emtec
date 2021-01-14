@@ -19,7 +19,7 @@ import restapi from "./api/routes";
   });
 
   apolloServer.applyMiddleware({ app, cors: false });
-
+  app.use(express.json());
   app.use("/api", restapi);
   const port = process.env.PORT || 4000;
   app.listen(port, () => {

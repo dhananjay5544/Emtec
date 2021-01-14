@@ -26,5 +26,6 @@
   "scripts": {
     "start": "nodemon --exec ts-node src/index.ts"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "author": "Dhananjay Shinde"
 }

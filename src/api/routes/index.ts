@@ -6,7 +6,7 @@ const router = Router();
 // Base route
 router.get("/", (_: Request, res: Response) => {
   res.send({
-    msg: "Welcome to the rest api",
+    msg: "Welcome to the libary API",
     requestedAt: new Date().toTimeString(),
   });
 });
