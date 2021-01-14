@@ -22,7 +22,7 @@ export default async () => {
 
     // get email list
     const emails = issuedUsers.map((u) => {
-      if (moment(new Date()).diff(moment(u.created_at), "days") === 7) {
+      if (moment(new Date()).diff(moment(u.created_at), "days") > 6) {
         return u.userinfo.email;
       } else {
         return;
