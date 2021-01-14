@@ -1,35 +1,48 @@
 import nodemailer from "nodemailer";
 import schedule from "node-schedule";
+import moment from "moment";
+import { Library } from "../entity/Library";
 
-export default async (email: string, name: string) => {
-  let testAccount = await nodemailer.createTestAccount();
+export default async () => {
   const transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false,
+    service: "gmail",
     auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
+      user: "email",
+      pass: "pass",
     },
   });
-  var date = new Date();
-  date.setDate(date.getDay() + 7);
-  schedule.scheduleJob(
-    `0 0 12 ${date.getDay()} ${date.getMonth()} *`,
-    async () => {
+
+  // run scheduler on everyday 8 AM O'Clock
+  schedule.scheduleJob(`0 0 8 * * ?`, async () => {
+    // find the users who need to notify
+    const issuedUsers = await Library.find({
+      where: { status: "issued" },
+      relations: ["userinfo"],
+    });
+
+    // get email list
+    const emails = issuedUsers.map((u) => {
+      if (moment(new Date()).diff(moment(u.created_at), "days") === 7) {
+        return u.userinfo.email;
+      } else {
+        return;
+      }
+    });
+
+    if (emails[0] !== undefined) {
       try {
         let mailRes = await transporter.sendMail({
-          from: "test@ritindia.edu",
-          to: email,
+          from: "noreply@libraryAdmin",
+          to: emails.join(","),
           subject: "book return reminder",
-          html: `<h1>Hello ${name}, Please Return your book</h1>`,
+          html: `<h1>Hello, Please Return your book</h1>`,
         });
-        console.log("mail sent", mailRes);
-        return `reminder has been set for user ${name}`;
+        console.log("reminder mail sent to users", mailRes);
       } catch (error) {
-        console.log("unable to send reminder mail to user");
-        return `unable to set reminder`;
+        console.log("unable to send reminder mail", error);
       }
+    } else {
+      console.log("no reminder for today");
     }
-  );
+  });
 };
