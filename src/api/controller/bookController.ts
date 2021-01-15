@@ -1,30 +1,23 @@
 import { Request, Response } from "express";
-import { Book } from "../../graphql/entity/Book";
+import bookService from "../../services";
 
 // book by book_id
 const getBook = async (req: Request, res: Response) => {
-  const book = await Book.find({
-    relations: ["users"],
-    where: { book_id: req.params.id },
-  });
-  if (book.length === 0) {
-    res.json({ msg: "Book not found!" });
-  } else {
-    res.json({ data: book });
-  }
+  const result = await bookService.getBook(parseInt(req.params.id));
+  res.status(result.status).json({ data: result.data });
 };
 
 // all books
 const getBooks = async (_: Request, res: Response) => {
-  const books = await Book.find({ relations: ["users"] });
-  res.json({ data: books });
+  const result = await bookService.getBooks();
+  res.status(200).json({ data: result });
 };
 
 // add new book
 const addBook = async (req: Request, res: Response) => {
   try {
-    const book = await Book.create(req.body).save();
-    res.json({ msg: "Book added", book });
+    const result = await bookService.addBook(req.body);
+    res.json({ msg: "Book added", result });
   } catch (error) {
     res.json({ msg: "Unable to add book", error });
   }
@@ -32,27 +25,17 @@ const addBook = async (req: Request, res: Response) => {
 
 // update book
 const updateBook = async (req: Request, res: Response) => {
-  const book = await Book.findOne({ where: { book_id: req.params.id } });
-  if (!book) {
-    res.json({ msg: "Book not found!" });
-  } else {
-    Object.assign(book, req.body);
-    const updatedBook = await book.save();
-    res.json({ msg: "Book updated", updatedBook });
-  }
+  const result = await bookService.updateBook(
+    parseInt(req.params.id),
+    req.body
+  );
+  res.status(result.status).json({ data: result.msg });
 };
 
 // delete book
 const deleteBook = async (req: Request, res: Response) => {
-  const book = await Book.find({
-    where: { book_id: req.params.id },
-  });
-  if (book.length === 0) {
-    res.json({ msg: "Book not found!" });
-  } else {
-    await Book.delete({ book_id: parseInt(req.params.id) });
-    res.json({ data: "Book deleted" });
-  }
+  const result = await bookService.deleteBook(parseInt(req.params.id));
+  res.status(result.status).json({ data: result.msg });
 };
 
 export { getBook, getBooks, addBook, updateBook, deleteBook };
