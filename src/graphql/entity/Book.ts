@@ -4,7 +4,6 @@ import {
   Column,
   BaseEntity,
   ManyToMany,
-  JoinTable,
 } from "typeorm";
 import { Field, Int, ObjectType } from "type-graphql";
 import { User } from "./User";
@@ -29,6 +28,5 @@ export class Book extends BaseEntity {
   quantity: number;
 
   @ManyToMany(() => User, (user: User) => user.books)
-  @JoinTable()
   users: User[];
 }
