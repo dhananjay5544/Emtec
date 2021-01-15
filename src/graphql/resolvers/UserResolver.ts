@@ -1,42 +1,37 @@
 import { Resolver, Mutation, Arg, Int, Query } from "type-graphql";
 import { User } from "../entity/User";
 import { UserInput, UserUpdateInput, UserOutput } from "../types/usertypes";
+import userService from "../../services";
 
 @Resolver()
 export class UserResolver {
   // Mutation: create user
   @Mutation(() => User)
   async createUser(@Arg("options", () => UserInput) options: UserInput) {
-    const user = await User.create(options).save();
-    return user;
+    return await userService.addUser(options);
   }
 
   // Mutation: update user
-  @Mutation(() => Boolean)
+  @Mutation(() => String)
   async updateUser(
     @Arg("id", () => Int) id: number,
     @Arg("input", () => UserUpdateInput) input: UserUpdateInput
   ) {
-    const user = await User.findOne({ where: { user_id: id } });
-    if (!user) throw new Error("User not found!");
-    Object.assign(user, input);
-    await user.save();
-    return true;
+    const res = await userService.updateUser(id, input);
+    return res.msg;
   }
 
   // Mutation: delete user
-  @Mutation(() => Boolean)
+  @Mutation(() => String)
   async deleteUser(@Arg("id", () => Int) id: number) {
-    const user = await User.findOne({ where: { user_id: id } });
-    if (!user) throw new Error("User not found!");
-    await User.delete({ user_id: id });
-    return true;
+    const res = await userService.deleteUser(id);
+    return res.msg;
   }
 
   // Query: get all users
   @Query(() => [UserOutput])
   async Users() {
-    const users = await User.find({ relations: ["books"] });
+    const users = await userService.getUsers();
     return users;
   }
 }
