@@ -15,15 +15,15 @@
     - [x] Issue Book
     - [x] Return Book
 
-- [ ] REST API Support
+- [x] REST API Support
 
   - [x] Routes
   - [x] Controllers
   - [x] Book CRUD operations
   - [x] User CRUD operations
-  - [ ] Library admin functions
-    - [ ] Issue Book
-    - [ ] Return Book
+  - [x] Library admin functions
+    - [x] Issue Book
+    - [x] Return Book
 
 - [x] Common Codebase for both REST and GraphQL
   - [x] Entities
