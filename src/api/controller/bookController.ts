@@ -38,4 +38,17 @@ const deleteBook = async (req: Request, res: Response) => {
   res.status(result.status).json({ data: result.msg });
 };
 
-export { getBook, getBooks, addBook, updateBook, deleteBook };
+
+// issue book
+const issueBook = async (req: Request, res: Response) => {
+  const result = await bookService.issueBook(req.body)
+  res.status(result.status).json({ data: result });
+};
+
+// return book
+const returnBook = async (req: Request, res: Response) => {
+  const result = await bookService.returnBook(req.body)
+  res.status(result.status).json({ data: result });
+};
+
+export { getBook, getBooks, addBook, updateBook, deleteBook,issueBook,returnBook };

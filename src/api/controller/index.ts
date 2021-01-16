@@ -4,6 +4,8 @@ import {
   getBooks,
   deleteBook,
   updateBook,
+  issueBook,
+  returnBook
 } from "./bookController";
 import {
   addUser,
@@ -24,4 +26,6 @@ export default {
   updateUser,
   getUser,
   getUsers,
+  issueBook,
+  returnBook
 };

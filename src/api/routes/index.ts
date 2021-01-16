@@ -25,4 +25,8 @@ router.post("/user", controller.addUser);
 router.put("/user/:id", controller.updateUser);
 router.delete("/user/:id", controller.deleteUser);
 
+// library routes
+router.post("/issue", controller.issueBook);
+router.post("/return", controller.returnBook);
+
 export default router;
