@@ -72,10 +72,11 @@ const returnBook = async (options: BookReturnInput) => {
   const exists = await Library.count({
     where: {
       bookid: options.bookid,
-      userId: options.userid,
+      userid: options.userid,
       status: "issued",
     },
   });
+
   if (exists) {
     await Library.update(
       { bookid: options.bookid, userid: options.userid },
