@@ -2,7 +2,7 @@ import { Field, InputType, Int, ObjectType } from "type-graphql";
 
 @ObjectType()
 export class ActionResponse {
-  @Field(() => Boolean)
+  @Field(() => Int)
   status: number;
 
   @Field()

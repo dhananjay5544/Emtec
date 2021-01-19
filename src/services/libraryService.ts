@@ -77,31 +77,38 @@ const returnBook = async (options: BookReturnInput) => {
     },
   });
 
-  if (exists) {
-    await Library.update(
-      { bookid: options.bookid, userid: options.userid },
-      { status: "returned" }
-    );
+  if (user.length !== 0) {
+    if (exists) {
+      await Library.update(
+        { bookid: options.bookid, userid: options.userid },
+        { status: "returned" }
+      );
 
-    user[0].books = user[0].books.filter((i) => i.book_id !== options.bookid);
-    user[0].save();
+      user[0].books = user[0].books.filter((i) => i.book_id !== options.bookid);
+      user[0].save();
 
-    // increament book count
-    const entityManager = getManager();
-    await entityManager.increment(
-      Book,
-      { book_id: options.bookid },
-      "quantity",
-      1
-    );
-    return {
-      status: 200,
-      msg: `book has been returned by user ${options.userid}`,
-    };
+      // increament book count
+      const entityManager = getManager();
+      await entityManager.increment(
+        Book,
+        { book_id: options.bookid },
+        "quantity",
+        1
+      );
+      return {
+        status: 200,
+        msg: `book has been returned by user ${options.userid}`,
+      };
+    } else {
+      return {
+        status: 422,
+        msg: `book was not issued to user ${options.userid}`,
+      };
+    }
   } else {
     return {
-      status: 200,
-      msg: `book was not issued to user ${options.userid}`,
+      status: 404,
+      msg: `User not found`,
     };
   }
 };
