@@ -3,7 +3,11 @@ import { createConnection } from "typeorm";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
-import resolvers from "./graphql/resolvers";
+import {
+  BookResolver,
+  LibraryResolver,
+  UserResolver,
+} from "./graphql/resolvers";
 import restapi from "./api/routes";
 import scheduler from "./graphql/utils/scheduleReminder";
 
@@ -14,7 +18,7 @@ import scheduler from "./graphql/utils/scheduleReminder";
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers,
+      resolvers: [BookResolver, LibraryResolver, UserResolver],
     }),
     context: ({ req, res }) => ({ req, res }),
   });
